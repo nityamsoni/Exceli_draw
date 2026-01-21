@@ -24,11 +24,24 @@ app.post("/signup", (req, res) => {
 app.post("/signin", (req, res) => {
 //db logic here
 const userId =1;
+
+const data=SignInSchema.parse(req.body);  
+//@ts-ignore
+if(!data.success){
+  return res.status(400).json({ error: "Invalid data" });
+}
 //@ts-ignore
 const token = jwt.sign(userId, JWT_SECRET, { expiresIn: "1h" });
   res.json(token);
 });
 app.post("/connectRoom", authmiddleware,(req, res) => {
+
+
+  const date=CreateRoomSchema.parse(req.body);  
+  //@ts-ignore
+  if(!date.success){
+    return res.status(400).json({ error: "Invalid data" });
+  }
   res.json({ roomId: 1234 });
 });
 app.listen(PORT, () => {
