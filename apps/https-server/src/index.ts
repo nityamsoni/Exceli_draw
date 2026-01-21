@@ -2,7 +2,7 @@ import express  from "express";
 import { JWT_SECRET } from "./config.js";
 import jwt from "jsonwebtoken";
 import { authmiddleware } from "./authmiddleware.js";
-
+import { CreateUserSchema , CreateRoomSchema , SignInSchema } from "@repo/common/types";
 const app = express();
 const PORT = 443;
 
@@ -12,6 +12,12 @@ app.get("/", (req, res) => {
 
 app.post("/signup", (req, res) => {
 //db logic here
+
+  const data=CreateUserSchema.parse(req.body);  
+  //@ts-ignore
+  if(!data.success){
+    return res.status(400).json({ error: "Invalid data" });
+  }
 
   res.json({ status: "OK" });
 });
