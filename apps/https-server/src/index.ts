@@ -13,8 +13,7 @@ app.get("/", (req, res) => {
 app.post("/signup", (req, res) => {
 //db logic here
 
-  const data=CreateUserSchema.parse(req.body);  
-  //@ts-ignore
+  const data=CreateUserSchema.safeParse(req.body);  
   if(!data.success){
     return res.status(400).json({ error: "Invalid data" });
   }
