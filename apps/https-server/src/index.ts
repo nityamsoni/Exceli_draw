@@ -3,6 +3,7 @@ import { JWT_SECRET } from "./config.js";
 import jwt from "jsonwebtoken";
 import { authmiddleware } from "./authmiddleware.js";
 import { CreateUserSchema , CreateRoomSchema , SignInSchema } from "@repo/common/types";
+import { prismaClient } from "@repo/db/client";
 const app = express();
 const PORT = 443;
 
@@ -10,15 +11,30 @@ app.get("/", (req, res) => {
   res.send("Hello, HTTPS World!");
 });
 
-app.post("/signup", (req, res) => {
+app.post("/signup",async  (req, res) => {
 //db logic here
 
   const data=CreateUserSchema.safeParse(req.body);  
   if(!data.success){
     return res.status(400).json({ error: "Invalid data" });
   }
+try{
 
-  res.json({ status: "OK" });
+  
+ await  prismaClient.user.create({
+    data: {
+      email: data.data.email,
+      name: data.data.name,
+      password: data.data.password,
+    },
+  });
+}
+catch(err){
+  return res.status(411).json({ error: "Internal server error" });
+}
+
+
+  res.json({ userId: "123" });
 });
 app.post("/signin", (req, res) => {
 //db logic here
